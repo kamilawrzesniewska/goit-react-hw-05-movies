@@ -1,10 +1,10 @@
 import { useParams } from 'react-router-dom';
-import { useCast } from 'utils/apiSupport';
+import { fetchMovieCast } from 'utils/apiSupport';
 import Loader from '../Loader/Loader';
 
 const Cast = () => {
   const { movieId } = useParams();
-  const { cast } = useCast(movieId);
+  const { cast } = fetchMovieCast(movieId);
 
   if (!cast) return <Loader />;
 

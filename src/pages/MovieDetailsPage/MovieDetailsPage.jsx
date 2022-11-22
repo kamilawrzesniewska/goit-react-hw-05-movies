@@ -6,13 +6,13 @@ import {
   useLocation,
   useParams,
 } from 'react-router-dom';
-import { useDetails } from 'utils/apiSupport';
+import { fetchMovieById } from 'utils/apiSupport';
 import Loader from 'components/Loader/Loader';
 import styles from './MovieDetailsPage.module.css';
 
 const MovieDetailsPage = () => {
   const { movieId } = useParams();
-  const { movie } = useDetails(movieId);
+  const { movie } = fetchMovieById(movieId);
   const location = useLocation();
 
 
