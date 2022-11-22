@@ -1,39 +1,29 @@
 import styles from './MovieList.module.css';
-import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
-const MovieList = ({ movies }) => {
-  const { movie__item, movie__list, movie__title, movie__link } = styles;
+const SearchMovieList = ({ movies }) => {
   const location = useLocation();
 
+  if (!movies) return;
+
   return (
-    <ul className={movie__list}>
-      {movies.map(({ title, id, poster_path }) => (
-        <li className={movie__item} key={id}>
-          <Link
-            className={movie__link}
-            to={`/movies/${id}`}
-            state={{ from: location }}
-          >
-            {poster_path ? (
-              <img
-                src={`https://image.tmdb.org/t/p/w500${poster_path}`}
-                alt={`Poster of ${title}`}
-              />
-            ) : (
-              <img src={placeholderImg} alt={`Placeholder`} />
-            )}
-            <p className={movie__title}>{title}</p>
-          </Link>
-        </li>
-      ))}
+    <ul>
+      {movies.map(movie => {
+        return (
+          <li className={styles.item} key={movie.id}>
+            <Link to={`${movie.id}`} state={{ from: location }}>
+              {movie.title}
+            </Link>
+          </li>
+        );
+      })}
     </ul>
   );
 };
 
-MovieList.propTypes = {
-  movies: PropTypes.array,
+SearchMovieList.propTypes = {
+  movies: PropTypes.array.isRequired,
 };
 
-export default MovieList;
+export default SearchMovieList;
