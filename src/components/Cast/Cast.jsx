@@ -1,43 +1,51 @@
+import styles from './Cast.module.css';
+import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { fetchMovieCast } from 'utils/apiSupport';
-import Loader from '../Loader/Loader';
+import { nanoid } from 'nanoid';
+import placeholderImg from '../../components/img/xxclose.png';
+
 
 const Cast = () => {
-  const { movieId } = useParams();
-  const { cast } = fetchMovieCast(movieId);
+  const { list, item, title, text__wrapper } = styles;
 
-  if (!cast) return <Loader />;
+  const { movieId } = useParams();
+  const [cast, setCast] = useState([]);
+
+  useEffect(() => {
+    fetchMovieCast(movieId, setCast).catch(console.error);
+  }, [movieId]);
 
   return (
-    <div>
-      <ul>
-        {cast.map(actor => {
-          return (
-            <li key={actor.id}>
-              {actor.profile_path === null ? (
-                <p
-                  style={{
-                    fontSize: '80px',
-                    margin: '0',
-                  }}
-                >
-                  &#10068;
-                </p>
-              ) : (
-                <img
-                  src={`https://image.tmdb.org/t/p/w200/${actor.profile_path}`}
-                  alt={`${actor.name}`}
-                  width="90"
-                />
-              )}
-              <p>{actor.name}</p>
-              <p>Character: {actor.character}</p>
-            </li>
-          );
-        })}
-      </ul>
-    </div>
+    <section>
+      {cast.length > 0 ? (
+        <ul className={list}>
+          {cast.map(({ character, name, profile_path }) => {
+            return (
+              <li className={item} key={nanoid()}>
+                {profile_path ? (
+                  <img
+                    src={`https://image.tmdb.org/t/p/w200${profile_path}`}
+                    alt={`${name}`}
+                  />
+                ) : (
+                  <img src={placeholderImg} alt={`Placeholder`} />
+                )}
+                <div className={text__wrapper}>
+                  <h4 className={title}>{name}</h4>
+                  {character ?? <p> {`as ${character}`}</p>}
+                </div>
+              </li>
+            );
+          })}
+        </ul>
+      ) : (
+        <p className="error">Sorry, the cast is not available!</p>
+      )}
+    </section>
   );
 };
+
+
 
 export default Cast;
